@@ -40,17 +40,20 @@ long lastSampleTime = 0;
 static Sodaq_R4X r4x;
 static Sodaq_SARA_R4XX_OnOff saraR4xxOnOff;
 static bool isReady;
+
+void sendrssiMQTT()
 {
-DEBUG_STREAM.println();
-DEBUG_STREAM.println("Sending message through MQTT");
-String reading = "{\"RSSI\":{\"value\":" + String(getsegnale()) +"}}";
-uint8_t size = reading.length();
-int lengthSent = r4x.mqttPublish("boh", (uint8_t*)reading.c_str(), size, 0, 0, 1);
-DEBUG_STREAM.print("Length buffer vs sent:");
-DEBUG_STREAM.print(size);
-DEBUG_STREAM.print(",");
-DEBUG_STREAM.println(lengthSent);
-DEBUG_STREAM.println();
+  DEBUG_STREAM.println();
+  DEBUG_STREAM.println("Sending message through MQTT");
+  //String reading = "{\"RSSI\":{\"value\":" + String(getsegnale()) +"}}";
+  String reading = "test";
+  uint8_t size = reading.length();
+  int lengthSent = r4x.mqttPublish("boh", (uint8_t*)reading.c_str(), size, 0, 0, 1);
+  DEBUG_STREAM.print("Length buffer vs sent:");
+  DEBUG_STREAM.print(size);
+  DEBUG_STREAM.print(",");
+  DEBUG_STREAM.println(lengthSent);
+  DEBUG_STREAM.println();
 }
 
 void setup() {
@@ -72,12 +75,11 @@ void setup() {
   MODEM_STREAM.begin(r4x.getDefaultBaudrate());
   DEBUG_STREAM.println("Inizializzazione e connessione... ");
   r4x.setDiag(DEBUG_STREAM);
-  r4x.init(&saraR4xxOnOff, MODEM_STREAM)
+  r4x.init(&saraR4xxOnOff, MODEM_STREAM);
   isReady = r4x.connect(CURRENT_APN, CURRENT_URAT); //per connessione Nb-IoT
   //creo la connessione al cloud server MQTT
   if(isReady){
-    isReady=r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT)&&r4x.mqttSetAuth(MQTT_SERVER_CL
-    IENT, MQTT_SERVER_password) && r4x.mqttLogin();
+    isReady=r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT)&&r4x.mqttSetAuth(MQTT_SERVER_CLIENT, MQTT_SERVER_password) && r4x.mqttLogin();
     DEBUG_STREAM.println(isReady ? "MQTT connected" : "MQTT failed");
   }
   else 
