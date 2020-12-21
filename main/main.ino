@@ -42,18 +42,26 @@ static Sodaq_SARA_R4XX_OnOff saraR4xxOnOff;
 static bool isReady;
 
 void sendrssiMQTT()
-{
-  DEBUG_STREAM.println();
-  DEBUG_STREAM.println("Sending message through MQTT");
-  //String reading = "{\"RSSI\":{\"value\":" + String(getsegnale()) +"}}";
-  String reading = "test";
-  uint8_t size = reading.length();
-  int lengthSent = r4x.mqttPublish("boh", (uint8_t*)reading.c_str(), size, 0, 0, 1);
-  DEBUG_STREAM.print("Length buffer vs sent:");
-  DEBUG_STREAM.print(size);
-  DEBUG_STREAM.print(",");
-  DEBUG_STREAM.println(lengthSent);
-  DEBUG_STREAM.println();
+{ 
+  int8_t* RSSI_value;
+  uint8_t* BER_value;
+  // Get the Received Signal Strength Indication in dBm and Bit Error Rate. 
+  if (r4x.getRSSIAndBER(RSSI_value, BER_value)) // getRSSIAndBER returns true if successful.
+  {
+    DEBUG_STREAM.println();
+    DEBUG_STREAM.println("Sending message through MQTT");
+    //String reading = "{\"RSSI\":{\"value\":" + String(getsegnale()) +"}}";
+    String reading = "{\"RSSI\":{\"value\":" + String(*RSSI_value) +"}}";
+    uint8_t size = reading.length();
+    int lengthSent = r4x.mqttPublish("boh", (uint8_t*)reading.c_str(), size, 0, 0, 1);
+    DEBUG_STREAM.print("Length buffer vs sent:");
+    DEBUG_STREAM.print(size);
+    DEBUG_STREAM.print(",");
+    DEBUG_STREAM.println(lengthSent);
+    DEBUG_STREAM.println();
+  }
+  else // getRSSIAndBER returns false if unsuccessful.
+    DEBUG_STREAM.println("Unable to get RSSI and BER \n");
 }
 
 void setup() {
