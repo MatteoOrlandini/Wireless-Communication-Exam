@@ -11,7 +11,7 @@
 #define powerPin SARA_ENABLE
 #define enablePin SARA_TX_ENABLE
 #define DEBUG_STREAM_BAUD 115200
-#define STARTUP_DELAY 10000
+#define STARTUP_DELAY 15000
 //parametri TIM per connessione mqtt
 #define CURRENT_APN "nbiot.tids.tim.it"
 #define CURRENT_URAT "8"  //SODAQ_R4X_NBIOT_URAT = "8"
