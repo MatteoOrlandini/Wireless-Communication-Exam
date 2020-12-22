@@ -17,8 +17,8 @@
 #define CURRENT_APN "nbiot.tids.tim.it"
 #define CURRENT_URAT "8"
 //parametri per il server cloudmqtt
-#define MQTT_SERVER_NAME "hairdresser.cloudmqtt.com"
-#define MQTT_SERVER_PORT 15731
+#define MQTT_SERVER_NAME "test.mosquitto.org"
+#define MQTT_SERVER_PORT 1883
 #define MQTT_SERVER_CLIENT "jylhjcod"
 #define MQTT_SERVER_password "UyFRsdfOp10T"
 
