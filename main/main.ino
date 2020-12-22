@@ -10,12 +10,11 @@
 #define MODEM_STREAM Serial1
 #define powerPin SARA_ENABLE
 #define enablePin SARA_TX_ENABLE
-#define DEBUG_STREAM SerialUSB
 #define DEBUG_STREAM_BAUD 115200
-#define STARTUP_DELAY 15000
+#define STARTUP_DELAY 10000
 //parametri TIM per connessione mqtt
 #define CURRENT_APN "nbiot.tids.tim.it"
-#define CURRENT_URAT "8"
+#define CURRENT_URAT "8"  //SODAQ_R4X_NBIOT_URAT = "8"
 //parametri per il server cloudmqtt
 #define MQTT_SERVER_NAME "test.mosquitto.org"
 #define MQTT_SERVER_PORT 1883
@@ -25,11 +24,8 @@
 //DHT22
 #define DHTPIN 2 //Pin a cui è connesso il sensore
 #define DHTTYPE DHT22 //Tipo di sensore che stiamo utilizzando (DHT22)
-DHT dht(DHTPIN, DHTTYPE); //Inizializza oggetto chiamato "dht", parametri: pin a cui è connesso il sensore, tipo di dht
-//11/22
+DHT dht(DHTPIN, DHTTYPE); //Inizializza oggetto chiamato "dht", parametri: pin a cui è connesso il sensore, tipo di dht 11/22
 //Variabili
-float hum; //Variabile in cui verrà inserita la % di umidità
-float temp; //Variabile in cui verrà inserita la temperatura
 //Z14A
 //Request Gas concentration command
 const long samplePeriod = 10000L;
@@ -44,15 +40,15 @@ static bool isReady;
 
 void sendrssiMQTT()
 { 
-  int8_t* RSSI_value;
-  uint8_t* BER_value;
+  int8_t RSSI_value;
+  uint8_t BER_value;
   // Get the Received Signal Strength Indication in dBm and Bit Error Rate. 
-  if (r4x.getRSSIAndBER(RSSI_value, BER_value)) // getRSSIAndBER returns true if successful.
+  if (r4x.getRSSIAndBER(&RSSI_value, &BER_value)) // getRSSIAndBER returns true if successful.
   {
     DEBUG_STREAM.println();
-    DEBUG_STREAM.println("Sending message through MQTT\n");
+    DEBUG_STREAM.println("Sending RSSI through MQTT\n");
     //String reading = "{\"RSSI\":{\"value\":" + String(getsegnale()) +"}}";
-    String reading = "{\"RSSI\":{\"value\":" + String(*RSSI_value) +"}}";
+    String reading = "{\"RSSI\":{\"value\":" + String(RSSI_value) +"}}";
     uint8_t size = reading.length();
     int lengthSent = r4x.mqttPublish("boh", (uint8_t*)reading.c_str(), size, 0, 0, 1);
     DEBUG_STREAM.print("Length buffer vs sent:");
@@ -66,10 +62,11 @@ void sendrssiMQTT()
 }
 
 //SEND DHT22 MQTT
-void sendDHT22(){
-  hum = dht.readHumidity();
-  temp= dht.readTemperature();
-  uint8_t size = String(hum).length(); //utilizzo il comando String per passare da dato di tipo float o int a stringa
+void sendDHT22()
+{
+  float hum = dht.readHumidity(); // Variabile in cui verrà inserita la % di umidità
+  float temp = dht.readTemperature(); // Variabile in cui verrà inserita la temperatura
+  uint8_t size = String(hum).length(); // utilizzo il comando String per passare da dato di tipo float o int a stringa
   uint8_t size2 = String(temp).length();
   //invio dati mqtt
   int lengthSent = r4x.mqttPublish("dht22/temperature", (uint8_t*)String(temp).c_str(), size, 0, 0, 1);
@@ -102,7 +99,8 @@ void sendZ14A()
   }
 }
 
-int readPPMV() {
+int readPPMV() 
+{
   float v = analogRead(A0); //* 5.0 / 1023.0;
   int ppm = int((v - 0.4) * 3125.0);
   return v;
@@ -115,18 +113,15 @@ void sendMQ137()
   ADC->INPUTCTRL.bit.GAIN = ADC_INPUTCTRL_GAIN_DIV2_Val;
   ADC->REFCTRL.bit.REFSEL = ADC_REFCTRL_REFSEL_INTVCC1;
   delay (1000); //ritardo per dare tempo all ADC di salvare e applicare le impostazioni
-  float sensor_volt; //Variabile per il voltaggio del sensore
-  float RS_air; //Variabile per la resistenza del sensore
-  float R0;
-  float sensorValue; //Definisce la variabile per la lettura dei valori analogici
+  float sensorValue = 0; //Definisce la variabile per la lettura dei valori analogici
   for(int x = 0 ; x < 500 ; x++) //Inizia il loop
   {
     sensorValue = sensorValue + analogRead(A1); //Somma i valori analogici del sensore 500 volte
   }
   sensorValue = sensorValue/500.0; //Prende il valor medio dei dati raccolti
-  sensor_volt = sensorValue*(5.0/1023.0); //converte dalla media ai volt
-  RS_air = ((5.0*10.0)/sensor_volt)-10.0; //calcolo di RS nell’aria
-  R0 = RS_air/3.6; //Calculate R0
+  float sensor_voltage = sensorValue*(5.0/1023.0); //converte dalla media ai volt
+  float RS_air = ((5.0*10.0)/sensor_voltage)-10.0; //calcolo di RS nell’aria
+  float R0 = RS_air/3.6; //Calculate R0
   //invio dati mqtt
   uint8_t size = String(R0).length();
   int lengthSent = r4x.mqttPublish("mq137/R0", (uint8_t*)String(R0).c_str(), size, 0, 0, 1);
@@ -137,7 +132,8 @@ void sendMQ137()
 }
 
 //SEND SDS018 MQTT
-void sendSDS018() {
+void sendSDS018() 
+{
   uint8_t mData = 0;
   uint8_t mPkt[10] = {0};
   uint8_t mCheck = 0;
@@ -167,8 +163,9 @@ void sendSDS018() {
   delay( 10000 );
 }
 
-void setup() {
-  sodaq_wdt_safe_delay(STARTUP_DELAY);
+void setup() 
+{
+  //sodaq_wdt_safe_delay(STARTUP_DELAY);
   Serial.begin(9600);
   SerialUSB.begin(9600);
   Serial1.begin( 9600, SERIAL_8N1 );
@@ -190,15 +187,19 @@ void setup() {
   DEBUG_STREAM.println(isReady ? "Network connected" : "Network connection failed");
   //creo la connessione al cloud server MQTT
   if(isReady){
-    isReady=r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT) && r4x.mqttSetAuth(MQTT_SERVER_CLIENT, MQTT_SERVER_password) && r4x.mqttLogin();
+    //isReady = r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT) && r4x.mqttSetAuth(MQTT_SERVER_CLIENT, MQTT_SERVER_password) && r4x.mqttLogin();
+    isReady = r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT);
     DEBUG_STREAM.println(isReady ? "MQTT connected" : "MQTT failed");
   }
+  // Send RSSI via MQTT
+  sendrssiMQTT();
 }
 
-void loop() {
+void loop() 
+{
   sendDHT22();
   sendZ14A();
   sendMQ137();
   sendSDS018();
-  sodaq_wdt_safe_delay(10000); // invio dati ogni 10s
+  sodaq_wdt_safe_delay(STARTUP_DELAY); // invio dati ogni 10s
 }
