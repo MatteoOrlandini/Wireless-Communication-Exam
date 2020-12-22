@@ -41,6 +41,7 @@ static Sodaq_R4X r4x;
 static Sodaq_SARA_R4XX_OnOff saraR4xxOnOff;
 static bool isReady;
 
+
 void sendrssiMQTT()
 { 
   int8_t* RSSI_value;
@@ -49,7 +50,7 @@ void sendrssiMQTT()
   if (r4x.getRSSIAndBER(RSSI_value, BER_value)) // getRSSIAndBER returns true if successful.
   {
     DEBUG_STREAM.println();
-    DEBUG_STREAM.println("Sending message through MQTT");
+    DEBUG_STREAM.println("Sending message through MQTT\n");
     //String reading = "{\"RSSI\":{\"value\":" + String(getsegnale()) +"}}";
     String reading = "{\"RSSI\":{\"value\":" + String(*RSSI_value) +"}}";
     uint8_t size = reading.length();
@@ -64,40 +65,6 @@ void sendrssiMQTT()
     DEBUG_STREAM.println("Unable to get RSSI and BER \n");
 }
 
-void setup() {
-  sodaq_wdt_safe_delay(STARTUP_DELAY);
-  Serial.begin(9600);
-  SerialUSB.begin(9600);
-  Serial1.begin( 9600, SERIAL_8N1 );
-  //SETUP DHT22
-  dht.begin();
-  Wire.begin();
-  //SETUP Z14A
-  analogWriteResolution(10); //valgono anche per mq137
-  analogReadResolution(12); //e servono per abilitare lettura da porta analogica
-  pinMode(A0,INPUT);
-  //SETUP MQ137
-  pinMode(A1,INPUT);
-  //INIZIO LA CONNESSIONE
-  DEBUG_STREAM.begin(DEBUG_STREAM_BAUD);
-  MODEM_STREAM.begin(r4x.getDefaultBaudrate());
-  DEBUG_STREAM.println("Inizializzazione e connessione... ");
-  r4x.setDiag(DEBUG_STREAM);
-  r4x.init(&saraR4xxOnOff, MODEM_STREAM);
-  isReady = r4x.connect(CURRENT_APN, CURRENT_URAT); //per connessione Nb-IoT
-  //creo la connessione al cloud server MQTT
-  if(isReady){
-    isReady=r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT)&&r4x.mqttSetAuth(MQTT_SERVER_CLIENT, MQTT_SERVER_password) && r4x.mqttLogin();
-    DEBUG_STREAM.println(isReady ? "MQTT connected" : "MQTT failed");
-  }
-  else 
-    DEBUG_STREAM.println("connection failed");
-  //dopo aver terminato il setup della scheda e la connessione invio i dati per la prima volta
-  sendrssiMQTT();
-  sendDHT22();
-  sendZ14A();
-  sendMQ137();
-}
 //SEND DHT22 MQTT
 void sendDHT22(){
   hum = dht.readHumidity();
@@ -131,8 +98,7 @@ void sendZ14A()
   int lengthSent = r4x.mqttPublish("z14a/ppm", (uint8_t*)String(ppmV).c_str(), size, 0, 0, 1);
   //stampa a video
   SerialUSB.print(ppmV);
-  SerialUSB.print(" ppm");
-  SerialUSB.print("\n");
+  SerialUSB.print(" ppm\n");
   }
 }
 
@@ -201,10 +167,38 @@ void sendSDS018() {
   delay( 10000 );
 }
 
+void setup() {
+  sodaq_wdt_safe_delay(STARTUP_DELAY);
+  Serial.begin(9600);
+  SerialUSB.begin(9600);
+  Serial1.begin( 9600, SERIAL_8N1 );
+  //SETUP DHT22
+  dht.begin();
+  Wire.begin();
+  //SETUP Z14A
+  analogWriteResolution(10); //valgono anche per mq137
+  analogReadResolution(12); //e servono per abilitare lettura da porta analogica
+  pinMode(A0,INPUT);
+  //SETUP MQ137
+  pinMode(A1,INPUT);
+  //INIZIO LA CONNESSIONE
+  DEBUG_STREAM.begin(DEBUG_STREAM_BAUD);
+  MODEM_STREAM.begin(r4x.getDefaultBaudrate());
+  r4x.setDiag(DEBUG_STREAM);
+  r4x.init(&saraR4xxOnOff, MODEM_STREAM);
+  isReady = r4x.connect(CURRENT_APN, CURRENT_URAT); //per connessione Nb-IoT
+  DEBUG_STREAM.println(isReady ? "Network connected" : "Network connection failed");
+  //creo la connessione al cloud server MQTT
+  if(isReady){
+    isReady=r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT) && r4x.mqttSetAuth(MQTT_SERVER_CLIENT, MQTT_SERVER_password) && r4x.mqttLogin();
+    DEBUG_STREAM.println(isReady ? "MQTT connected" : "MQTT failed");
+  }
+}
+
 void loop() {
-  sodaq_wdt_safe_delay(10000); // invio dati ogni 10s
   sendDHT22();
   sendZ14A();
   sendMQ137();
   sendSDS018();
+  sodaq_wdt_safe_delay(10000); // invio dati ogni 10s
 }
