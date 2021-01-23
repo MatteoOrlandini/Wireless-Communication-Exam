@@ -16,10 +16,10 @@ Y1 = Y(1:end/2);
 Y2 = Y(end/2+1:end);
 clear Y
 Y = [Y2; Y1];
-figure;
-plot(Y);
+%figure;
+%plot(Y);
 
-sampler=ones(length(signal),1);
+sampler=[0,1];
 y = conv(double(signal)', sampler);
 Y = 10*log10(abs(fft(y)));
 Y1 = Y(1:end/2);
