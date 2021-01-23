@@ -2,44 +2,18 @@ clc
 clear all
 close all
 
+Fs = 0.5e6;                 % Sampling frequency
 load('prova.mat', 'signal', 'signal2', 'signal3', 'signal4', 'signal5', 'out');
-A = reshape(signal, [], 1024);
-B = timeseries(double(A));
 beta = 0.5; % Rolloff factor
 span = 10; % Filter span in symbols
 sps = 2; % Samples per symbol
-h = rcosdesign(beta, span, sps, 'sqrt'); % Generate the square-root, raised cosine filter coefficients.
-%y = upfirdn(double(signal)', h, sps); % Upsample and filter the data for pulse shaping.
-y = conv(double(signal)', h);
-Y = 10*log10(abs(fft(y)));
-Y1 = Y(1:end/2);
-Y2 = Y(end/2+1:end);
-clear Y
-Y = [Y2; Y1];
-%figure;
-%plot(Y);
-
-sampler=[0,1];
-y = conv(double(signal)', sampler);
-Y = 10*log10(abs(fft(y)));
-Y1 = Y(1:end/2);
-Y2 = Y(end/2+1:end);
-clear Y
-Y = [Y2; Y1];
-hold on;
-plot(Y);
-
-L=length(Y);
-t=1:L;
-ff=500000;
-f=0:ff/L:ff-1/L;
-p=Y'.*t;
-mean=sum(p)/sum(Y);
-
-%medie ottenute: 2.5011, 2.4992, 2.5006, 2.5015, 2.5012     e+06
-
+signal = adaptivelyAdjustGain(double(signal)');
+plotSignalSpectrum(signal, Fs)
+plotSignalSpectrumAfterRaisedCosine(signal, beta, span, sps, Fs)
 
 %{
+A = reshape(signal, [], 1024);
+B = timeseries(double(A));
 % Open and Inspect the Model
 model = 'QPSK_receiver.slx';
 open_system(model);
