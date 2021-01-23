@@ -13,13 +13,13 @@
 #define powerPin SARA_ENABLE
 #define enablePin SARA_TX_ENABLE
 #define DEBUG_STREAM_BAUD 115200
-#define STARTUP_DELAY 10000
+#define STARTUP_DELAY 15000
 //parametri TIM per connessione mqtt
 #define CURRENT_APN "nbiot.tids.tim.it"
 #define CURRENT_URAT "8"  //SODAQ_R4X_NBIOT_URAT = "8"
 //parametri per il server cloudmqtt
-#define MQTT_SERVER_NAME "test.mosquitto.org"
-#define MQTT_SERVER_PORT 1883
+#define MQTT_SERVER_NAME "broker.mqttdashboard.com"
+#define MQTT_SERVER_PORT 8000
 #define MQTT_SERVER_CLIENT "jylhjcod"
 #define MQTT_SERVER_password "UyFRsdfOp10T"
 
@@ -38,7 +38,6 @@ long lastSampleTime = 0;
 static Sodaq_R4X r4x;
 static Sodaq_SARA_R4XX_OnOff saraR4xxOnOff;
 static bool isReady;
-
 
 void sendrssiMQTT()
 { 
@@ -189,8 +188,10 @@ void setup()
   DEBUG_STREAM.println(isReady ? "Network connected" : "Network connection failed");
   //creo la connessione al cloud server MQTT
   if(isReady){
-    //isReady = r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT) && r4x.mqttSetAuth(MQTT_SERVER_CLIENT, MQTT_SERVER_password) && r4x.mqttLogin();
-    isReady = r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT);
+    
+    isReady = r4x.mqttSetServer(MQTT_SERVER_NAME,MQTT_SERVER_PORT)&& r4x.mqttSetClientId("sodaq123") && r4x.mqttLogin();
+    DEBUG_STREAM.println(r4x.mqttSetClientId("sodaq123") ? "Id ok" : "Id failed");
+    //r4x.mqttSetAuth(MQTT_SERVER_CLIENT, MQTT_SERVER_password) &&
     DEBUG_STREAM.println(isReady ? "MQTT connected" : "MQTT failed");
   }
   // Send RSSI via MQTT

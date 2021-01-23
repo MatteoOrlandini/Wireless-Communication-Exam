@@ -65,8 +65,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #error "Please define a operator"
 #endif
 
-#define MQTT_SERVER_NAME "test.mosquitto.org"
-#define MQTT_SERVER_PORT 1883
+#define MQTT_SERVER_NAME "broker.mqttdashboard.com"
+#define MQTT_SERVER_PORT 8000
 
 #ifndef NBIOT_BANDMASK
 #define NBIOT_BANDMASK BAND_MASK_UNCHANGED
@@ -89,16 +89,16 @@ void setup()
     r4x.setDiag(CONSOLE_STREAM);
     r4x.init(&saraR4xxOnOff, MODEM_STREAM);
 
-    isReady = r4x.connect(CURRENT_APN, CURRENT_URAT);
+    isReady = r4x.connect(CURRENT_APN, CURRENT_URAT, CURRENT_MNO_PROFILE, CURRENT_OPERATOR, BAND_MASK_UNCHANGED, NBIOT_BANDMASK);
 
     CONSOLE_STREAM.println(isReady ? "Network connected" : "Network connection failed");
 
     if (isReady) {
-        check=r4x.mqttSetServer(MQTT_SERVER_NAME, MQTT_SERVER_PORT);
-        CONSOLE_STREAM.println(check ? "set ok" : "set failed");
+        //check=r4x.mqttSetServer(MQTT_SERVER_NAME, MQTT_SERVER_PORT);
+        //CONSOLE_STREAM.println(check ? "set ok" : "set failed");
 
-        check=r4x.mqttLogin();
-        CONSOLE_STREAM.println(check ? "login ok" : "login failed");
+        //check=r4x.mqttLogin();
+        //CONSOLE_STREAM.println(check ? "login ok" : "login failed");
         
         isReady = r4x.mqttSetServer(MQTT_SERVER_NAME, MQTT_SERVER_PORT) && r4x.mqttLogin();
         CONSOLE_STREAM.println(isReady ? "MQTT connected" : "MQTT failed");      
@@ -109,8 +109,8 @@ void setup()
         uint8_t buf1[] = {'t', 'e', 's', 't', '1'};
 
         r4x.mqttPublish("/home/test/test0", buf0, sizeof(buf0));
-        r4x.mqttPublish("/home/test/test1", buf1, sizeof(buf1), 0, 0, 1);
-        r4x.mqttSubscribe("/home/test/#");
+        //r4x.mqttPublish("/home/test/test1", buf1, sizeof(buf1), 0, 0, 1);
+        //r4x.mqttSubscribe("/home/test/#");
     }
 
     CONSOLE_STREAM.println("Setup done");
