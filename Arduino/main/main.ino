@@ -1,4 +1,6 @@
 #include <Sodaq_R4X.h>
+#include <Sodaq_MQTT.h>
+#include <Sodaq_R4X_MQTT.h>
 #include <Sodaq_wdt.h>
 #include <Sodaq_LSM303AGR.h>
 #include <Sodaq_UBlox_GPS.h>
