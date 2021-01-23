@@ -5,12 +5,20 @@ close all
 load('prova.mat', 'signal', 'signal2', 'signal3', 'signal4', 'signal5', 'out');
 A = reshape(signal, [], 1024);
 B = timeseries(double(A));
-%scatterplot(signal(1:1024));
-%pfo = comm.PhaseFrequencyOffset('PhaseOffset',45, 'FrequencyOffset', 1e4, 'SampleRate',1e6);
-%carrierSync = comm.CarrierSynchronizer('Modulation','QPSK','SamplesPerSymbol', 2);
-%[outSig,phErr] = carrierSync(double(signal(1:1024))');
-%scatterplot(outSig(1:1024))
+beta = 0.5; % Rolloff factor
+span = 10; % Filter span in symbols
+sps = 2; % Samples per symbol
+h = rcosdesign(beta, span, sps, 'sqrt'); % Generate the square-root, raised cosine filter coefficients.
+%y = upfirdn(double(signal)', h, sps); % Upsample and filter the data for pulse shaping.
+y = conv(double(signal)', h);
+Y = 10*log10(abs(fft(y)));
+Y1 = Y(1:end/2);
+Y2 = Y(end/2+1:end);
+clear Y
+Y = [Y2; Y1];
+plot(Y);
 
+%{
 % Open and Inspect the Model
 model = 'QPSK_receiver.slx';
 open_system(model);
@@ -28,6 +36,7 @@ data = getMeasurementsData(cfg);
 % Compare Peak Values
 peakvalues = data.PeakFinder.Value
 frequencieskHz = data.PeakFinder.Frequency/1000
+%}
 
 %{
 Fs = 0.512e6;                 % Sampling frequency
