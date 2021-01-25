@@ -7,10 +7,38 @@ load('prova.mat', 'signal', 'signal2', 'signal3', 'signal4', 'signal5', 'out');
 beta = 0.5; % Rolloff factor
 span = 10; % Filter span in symbols
 sps = 2; % Samples per symbol
-signal = adaptivelyAdjustGain(double(signal)');
-plotSignalSpectrum(signal, Fs)
-plotSignalSpectrumAfterRaisedCosine(signal, beta, span, sps, Fs)
 
+
+envspectrum(double(real(signal)),500000)
+hold on;
+envspectrum(double(real(signal2)),500000)
+% envspectrum(double(real(signal3)),500000)
+% envspectrum(double(real(signal4)),500000)
+
+% n=length(signal);
+% s1=abs(fft(signal));
+% S1=[s1(n/2+1:end),s1(1:n/2)];
+% plot(S1);
+% 
+% s2=abs(fft(signal2));
+% S2=[s2(n/2+1:end),s2(1:n/2)];
+% hold on;
+% plot(S2);
+% 
+% s3=abs(fft(signal3));
+% S3=[s3(n/2+1:end),s3(1:n/2)];
+% plot(S3);
+
+% signal = adaptivelyAdjustGain(double(signal)');
+% a=plotSignalSpectrumAfterRaisedCosine(signal, beta, span, sps, Fs);
+% 
+% signal2 = adaptivelyAdjustGain(double(signal2)');
+% b=plotSignalSpectrumAfterRaisedCosine(signal2, beta, span, sps, Fs);
+% 
+% figure;
+% plot(a);
+% hold on;
+% plot(b);
 %{
 A = reshape(signal, [], 1024);
 B = timeseries(double(A));

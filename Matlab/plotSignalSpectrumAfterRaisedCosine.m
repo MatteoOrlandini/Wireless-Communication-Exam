@@ -1,4 +1,4 @@
-function [] = plotSignalSpectrumAfterRaisedCosine(signal, beta, span, sps, sampling_frequency)
+function [Y] = plotSignalSpectrumAfterRaisedCosine(signal, beta, span, sps, sampling_frequency)
     L = length(signal);             % Length of signal
     h = rcosdesign(beta, span, sps, 'sqrt'); % Generate the square-root, raised cosine filter coefficients.
     y = conv(signal, h);
@@ -9,7 +9,7 @@ function [] = plotSignalSpectrumAfterRaisedCosine(signal, beta, span, sps, sampl
     Y = [Y2; Y1];
     frequency_axes = linspace(1, sampling_frequency, length(Y));
     figure('Name','Amplitude Spectrum After Raised Cosine','NumberTitle','off');
-    plot(frequency_axes, Y);
+    %plot(frequency_axes, Y);
     xlabel('Frequency [Hz]')
     ylabel('Signal (f) [dB]')
 end

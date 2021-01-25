@@ -1,5 +1,5 @@
 function [] = plotSignalSpectrum(signal, sampling_frequency)
-    sampler = ones(1, 1023);
+    sampler = ones(1, 2000);
     L = length(signal);             % Length of signal
     data = conv(signal, sampler);
     DATA = 10*log10(abs(fft(data/L)));
