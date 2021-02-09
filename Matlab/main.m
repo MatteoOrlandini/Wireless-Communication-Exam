@@ -7,23 +7,26 @@ close all
     "Signal_2.mat"; "Signal_IQ10.mat"; "Signal_IQ20.mat"; "Signal_IQ30.mat"]);
 
 %% delete first signal zeroes
-%simout = delete_first_zeroes(signal2.simout);
+%signal_array = reshape(signal1.simout', 1,[]);
+%simout = delete_first_zeroes(signal_array);
 
 %% Apply IQ imbal to original signal
 ampImb = 20*log10(1.3); % 30% imbalance
 phImb = 0;
-[imbalanced_signal,imbalanced_signal_timeseries] = apply_IQ_imbal(signal2.simout, ampImb, phImb);
+% signal must be an array
+signal_array = reshape(signal1.simout', 1,[]);
+[imbalanced_signal,imbalanced_signal_timeseries] = apply_IQ_imbal(signal_array, ampImb, phImb);
 
 figure('Name','Real part of original signal vs real part of imbalanced signal','NumberTitle','off');
-plot(real(signal2.simout(1:1000)));
+plot(real(signal_array(end-1000:end)));
 hold on
-plot(real(imbalanced_signal(1:1000)));
+plot(real(imbalanced_signal(end-1000:end)));
 legend('Original signal', 'Imbalanced signal');
 
 figure('Name','Imaginary part of original signal vs imaginary part of imbalanced signal','NumberTitle','off');
-plot(imag(signal2.simout(1:1000)));
+plot(imag(signal_array(end-1000:end)));
 hold on
-plot(imag(imbalanced_signal(1:1000)));
+plot(imag(imbalanced_signal(end-1000:end)));
 legend('Original signal', 'Imbalanced signal');
 
 %{
@@ -37,15 +40,15 @@ corrected_signal = imbalance_correction(imbalanced_signal, ampImb, phImb);
 
 figure('Name','Corrected signal and original signal comparison','NumberTitle','off');
 subplot(2,1,1);
-plot(corrected_signal(1, 1:1000));
+plot(corrected_signal(1, end-1000:end));
 hold on
-plot(real(signal2.simout(1:1000)));
+plot(real(signal_array(end-1000:end)));
 title('Real part of corrected signal vs real part of original signal');
 legend('Corrected signal', 'Original signal');
 subplot(2,1,2);
-plot(corrected_signal(2, 1:1000));
+plot(corrected_signal(2, end-1000:end));
 hold on
-plot(imag(signal2.simout(1:1000)));
+plot(imag(signal_array(end-1000:end)));
 title('Imaginary part of corrected signal vs imaginary part of original signal');
 legend('Corrected signal', 'Original signal');
 
@@ -55,5 +58,5 @@ legend('Corrected signal', 'Original signal');
 [ampImbEst phImbEst; ampImb phImb]
 
 %% Imbalance estimation of signal_IQ30
-signal_IQ30_out = load('Signal_IQ30_out.mat');
-[ampImbEst phImbEst] = imbalance_estimation(signal_IQ30_out.simout(end-1000:end))
+signal_IQ30 = reshape((signal_IQ30.simout)', 1,[]);
+[ampImbEst phImbEst] = imbalance_estimation(signal_IQ30(10000000:end))
