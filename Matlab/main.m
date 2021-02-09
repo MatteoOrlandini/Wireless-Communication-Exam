@@ -14,17 +14,14 @@ ampImb = 20*log10(1.3); % 30% imbalance
 phImb = 0;
 [imbalanced_signal,imbalanced_signal_timeseries] = apply_IQ_imbal(signal2.simout, ampImb, phImb);
 
-original_signal_vector = reshape(signal2.simout, 1, []);
-original_signal = [real(original_signal_vector); imag(original_signal_vector)];
-
 figure('Name','Real part of original signal vs real part of imbalanced signal','NumberTitle','off');
-plot(original_signal(1, 1:1000));
+plot(real(signal2.simout(1:1000)));
 hold on
 plot(real(imbalanced_signal(1:1000)));
 legend('Original signal', 'Imbalanced signal');
 
 figure('Name','Imaginary part of original signal vs imaginary part of imbalanced signal','NumberTitle','off');
-plot(original_signal(2, 1:1000));
+plot(imag(signal2.simout(1:1000)));
 hold on
 plot(imag(imbalanced_signal(1:1000)));
 legend('Original signal', 'Imbalanced signal');
@@ -42,13 +39,13 @@ figure('Name','Corrected signal and original signal comparison','NumberTitle','o
 subplot(2,1,1);
 plot(corrected_signal(1, 1:1000));
 hold on
-plot(original_signal(1, 1:1000));
+plot(real(signal2.simout(1:1000)));
 title('Real part of corrected signal vs real part of original signal');
 legend('Corrected signal', 'Original signal');
 subplot(2,1,2);
 plot(corrected_signal(2, 1:1000));
 hold on
-plot(original_signal(2, 1:1000));
+plot(imag(signal2.simout(1:1000)));
 title('Imaginary part of corrected signal vs imaginary part of original signal');
 legend('Corrected signal', 'Original signal');
 
