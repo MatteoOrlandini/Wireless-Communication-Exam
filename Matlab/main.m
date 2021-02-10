@@ -58,5 +58,9 @@ legend('Corrected signal', 'Original signal');
 [ampImbEst phImbEst; ampImb phImb]
 
 %% Imbalance estimation of signal_IQ30
-signal_IQ30 = reshape((signal_IQ30.simout)', 1,[]);
-[ampImbEst phImbEst] = imbalance_estimation(signal_IQ30(10000000:end))
+%signal_IQ30.simout = reshape((signal_IQ30.simout)', 1,[]);
+[ampImbEst phImbEst] = imbalance_estimation(reshape((signal_IQ30.simout)', 1,[]))
+
+%% Imbalance algorithm
+Signal_IQ30_after_carrier_synch = load('Signal_IQ30_after_carrier_synch.mat');
+[ampImbEst] = imbalance_algorithm_estimation(Signal_IQ30_after_carrier_synch.simout)
