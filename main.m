@@ -23,29 +23,31 @@ figure('Name','Real part of original signal vs real part of imbalanced signal','
 plot(real(signal1.simout(end, end-1000:end)));
 hold on
 plot(real(imbalanced_signal(end, end-1000:end)));
+xlim([0 1000]);
 legend('Original signal', 'Imbalanced signal');
 
 figure('Name','Imaginary part of original signal vs imaginary part of imbalanced signal','NumberTitle','off');
 plot(imag(signal1.simout(end, end-1000:end)));
 hold on
 plot(imag(imbalanced_signal(end, end-1000:end)));
+xlim([0 1000]);
 legend('Original signal', 'Imbalanced signal');
 
 %% Imbalance correction
 corrected_signal = imbalance_correction(reshape(imbalanced_signal', 1, []), ampImb, phImb);
 
-figure('Name','Corrected signal and original signal comparison','NumberTitle','off');
-subplot(2,1,1);
+figure('Name','Real part of corrected signal vs real part of original signal','NumberTitle','off');
 plot(corrected_signal(1, end-1000:end));
 hold on
 plot(real(signal1.simout(end, end-1000:end)));
-title('Real part of corrected signal vs real part of original signal');
+xlim([0 1000]);
 legend('Corrected signal', 'Original signal');
-subplot(2,1,2);
+
+figure('Name','Imaginary part of corrected signal vs real part of original signal','NumberTitle','off');
 plot(corrected_signal(2, end-1000:end));
 hold on
 plot(imag(signal1.simout(end, end-1000:end)));
-title('Imaginary part of corrected signal vs imaginary part of original signal');
+xlim([0 1000]);
 legend('Corrected signal', 'Original signal');
 
 %% Imbalance estimation of imbalanced_signal
