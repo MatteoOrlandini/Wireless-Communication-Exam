@@ -3,8 +3,11 @@ clear all
 close all
 
 %% load data
-[signal1, signal2, signal_IQ10, signal_IQ20, signal_IQ30] = load_data(["Signal_1.mat";...
-    "Signal_2.mat"; "Signal_IQ10.mat"; "Signal_IQ20.mat"; "Signal_IQ30.mat"]);
+signal1 = load('Signal_1.mat');
+signal2 = load('Signal_2.mat');
+signal_IQ10 = load('Signal_IQ10.mat');
+signal_IQ20 = load('Signal_IQ20.mat');
+signal_IQ30 = load('Signal_IQ30.mat');
 
 %% delete first signal zeroes
 %signal_array = reshape(signal1.simout', 1,[]);
