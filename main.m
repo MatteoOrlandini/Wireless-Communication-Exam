@@ -1,3 +1,4 @@
+
 clc
 clear all
 close all
@@ -34,7 +35,7 @@ xlim([0 1000]);
 legend('Original signal', 'Imbalanced signal');
 
 %% Imbalance correction
-corrected_signal = imbalance_correction(reshape(imbalanced_signal', 1, []), ampImb, phImb);
+corrected_signal = imbalance_correction(reshape(imbalanced_signal.', 1, []), ampImb, phImb);
 
 figure('Name','Real part of corrected signal vs real part of original signal','NumberTitle','off');
 plot(corrected_signal(1, end-1000:end));
@@ -51,7 +52,7 @@ xlim([0 1000]);
 legend('Corrected signal', 'Original signal');
 
 %% Imbalance estimation of imbalanced_signal
-[ampImbEst phImbEst] = imbalance_estimation(reshape(imbalanced_signal', 1, []));
+[ampImbEst phImbEst] = imbalance_estimation(reshape(imbalanced_signal.', [], 1));
 % Compare the estimated imbalance values with the specified ones.
 [ampImbEst phImbEst; ampImb phImb]
 

@@ -1,7 +1,6 @@
+% signal must be a row vector
 function [ampImbEst phImbEst] = imbalance_estimation(signal)
-    hIQComp = comm.IQImbalanceCompensator('CoefficientOutputPort',true);
-    % Signal must be a row vector
-    signal = reshape(signal, [], 1); 
+    hIQComp = comm.IQImbalanceCompensator('CoefficientOutputPort', true);
     % Normalize the power of the signal
     normalized_signal = signal./std(signal);
     % step processes the input data, normalized_signal, to produce the output for System object, hIQComp.
