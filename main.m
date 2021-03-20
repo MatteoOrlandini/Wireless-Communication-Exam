@@ -57,7 +57,7 @@ legend('Corrected signal', 'Original signal');
 [ampImbEst phImbEst; ampImb phImb]
 
 %% Imbalance estimation of signal_IQ30
-[ampImbEst phImbEst] = imbalance_estimation(reshape((signal_IQ30.simout)', 1,[]))
+[ampImbEst phImbEst] = imbalance_estimation(reshape((signal_IQ30.simout)', [],1))
 % Compare the estimated imbalance values with the specified ones.
 [ampImbEst phImbEst; ampImb phImb]
 
