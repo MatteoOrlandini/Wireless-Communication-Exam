@@ -41,12 +41,15 @@ The input signals are not available due to the large dimensions. The input signa
 ### Simulink
 
 signal_IQ30 after raised cosine
+
 ![](https://github.com/MatteoOrlandini/Wireless-Communication-Exam/blob/main/Images/signal_IQ30_after_raised_cosine_simulink.png)
 
 signal_IQ30 after symbol synchronizer
+
 ![](https://github.com/MatteoOrlandini/Wireless-Communication-Exam/blob/main/Images/signal_IQ30_after_symbol_synchronizer_simulink.png)
 
 signal_IQ30 after carrier synchronizer
+
 ![](https://github.com/MatteoOrlandini/Wireless-Communication-Exam/blob/main/Images/signal_IQ30_after_carrier_synchronizer_simulink.png)
 
 ### Matlab
