@@ -72,6 +72,16 @@ Comparison of the imaginary part of the corrected signal and the original signal
 
 ![](https://github.com/MatteoOrlandini/Wireless-Communication-Exam/blob/main/Images/imaginary_part_corrected_signal_comparison.png)
 
+The output of [imbalance_estimation.m](https://github.com/MatteoOrlandini/Wireless-Communication-Exam/blob/main/imbalance_estimation.m) is very similar to the expected values, in fact for the signal modified by [apply_IQ_imbal.m](https://github.com/MatteoOrlandini/Wireless-Communication-Exam/blob/main/apply_IQ_imbal.m), an amplitude imbalance of 2.4623 dB is estimated, while the expected one is 20 log_10 (1.3) = 2.2789 dB.
+
+The results of [imbalance_algorithm_estimation.m](https://github.com/MatteoOrlandini/Wireless-Communication-Exam/blob/main/imbalance_algorithm_estimation.m) are listed in the following table.
+
+|    Signal   | Imbalance [dB] | Estimated imbalance [dB] |
+|:-----------:|----------------|--------------------------|
+| Signal_IQ10 | 0.82785        | 0.81093                  |
+| Signal_IQ20 | 1.5836         | 1.2474                   |
+| Signal_IQ30 | 2.2789         | 1.6251                   |
+
 ## Conclusions
 
 This project showed, through the Matlab script, how it is possible to apply
