@@ -1,4 +1,7 @@
-function [imbal] = imbalance_algorithm_estimation(signal)
+function imbal = imbalance_algorithm_estimation(signal)
+% imbalance_algorithm_estimation estimates the imbalance from a signal
+%   imbal = imbalance_algorithm_estimation(signal) returns the amplitude
+%   imbalance imbal of signal
     signal = delete_first_zeroes(signal);
     signal_real = real(signal);
     signal_imag = imag(signal);

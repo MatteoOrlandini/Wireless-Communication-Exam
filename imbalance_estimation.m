@@ -1,5 +1,8 @@
-% signal must be a row vector
 function [ampImbEst phImbEst] = imbalance_estimation(signal)
+% imbalance_estimation estimates the amplitude and phase imbalance from a
+% signal using comm.IQImbalanceCompensator
+%   [ampImbEst phImbEst] = imbalance_estimation(signal) estimates the
+%   amplitude ampImbEst and phase phImbEst imbalance from row vector signal
     hIQComp = comm.IQImbalanceCompensator('CoefficientOutputPort', true);
     % Normalize the power of the signal
     normalized_signal = signal./std(signal);
